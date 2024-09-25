@@ -1,4 +1,5 @@
 import React from 'react';
+import { Bio } from '../data/constants.js';
 import styled, { isStyledComponent } from 'styled-components';
 
 const Nav = styled.div`
@@ -131,14 +132,14 @@ const Navbar = () => {
           <NavSpan>&gt;</NavSpan>
         </NavLogo>
         <NavItems>
-          <NavLink href="#about">About</NavLink>
+          <NavLink href="#">About</NavLink>
           <NavLink href='#skills'>Skills</NavLink>
           <NavLink href='#experience'>Experience</NavLink>
           <NavLink href='#projects'>Projects</NavLink>
           <NavLink href='#education'>Education</NavLink>
         </NavItems>
         <ButtonContainer>
-          <GitHubButton>Github Profile</GitHubButton>
+          <GitHubButton href={Bio.github} target='display'>Github Profile</GitHubButton>
         </ButtonContainer>
       </NavbarContainer>
     </Nav>
