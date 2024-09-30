@@ -19,8 +19,9 @@ const HeroContainer = styled.div`
     padding: 32px 16px;
   }
   z-index: 1;
-
+  
   clip-path: polygon(0 0, 100% 0, 100% 100%, 70% 95%, 0 100%);
+
 `;
 
 const HeroBg = styled.div`
@@ -32,7 +33,7 @@ const HeroBg = styled.div`
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 90%;
   max-width: 1360px;
   overflow: hidden;
   padding: 0 30px;
@@ -84,6 +85,8 @@ const HeroRightContainer = styled.div`
   display: flex;
   order: 2;
   justify-content: end;
+  margin-top:80;
+  margin-bottom:30;
   gap: 12px;
   @media (max-width: 960px) {
     order: 1;
@@ -153,13 +156,12 @@ const TextLoop = styled.div`
 
 const Span = styled.span`
   color: ${({ theme }) => theme.primary};
-  cursor: pointer;
 `;
 
 const SubTitle = styled.div`
   font-size: 18px;
   line-height: 32px;
-  margin-bottom: 34px;
+  margin-bottom: 38px;
   color: ${({ theme }) => theme.text_primary + 90};
 
   @media (max-width: 960px) {
@@ -186,6 +188,8 @@ const ResumeButton = styled.a`
     cursor: pointer;
     font-size: 20px;
     font-weight: 600;
+    margin-top: 8px;
+    margin-bottom: 30px;
     transition: all 0.2s ease-in-out !important;
     background: hsla(271, 100%, 50%, 1);
     background: linear-gradient(225deg, hsla(271, 100%, 50%, 1) 0%, hsla(294, 100%, 50%, 1) 100%);
