@@ -5,7 +5,8 @@ import Navbar from './components/Navbar.jsx';
 import Hero from './components/HeroSection.jsx';
 import Skills from './components/Skills.jsx';
 import Education from './components/Education.jsx';
-import Project from './components/Project.jsx';
+import Projects from './components/Projects.jsx';
+import Experience from './components/Experience.jsx';
 
 const Body = styled.div`
   background-color: ${({theme}) => theme.bg};
@@ -27,9 +28,10 @@ function App() {
         <Hero/>
         <Wrapper>
           <Skills/>
-          <Education/>
-          <Project/>
+          <Experience/>
         </Wrapper>
+        <Projects/>
+        <Education/>
       </Body>
     </ThemeProvider>
   );

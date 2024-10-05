@@ -11,6 +11,9 @@ position: relative;
 z-index: 1;
 align-items: center;
 scroll-margin-top: 80px;
+padding-bottom: 120px;
+
+clip-path: polygon(0 0, 100% 0, 100% 100%, 70% 95%, 0 100%);
 `
 
 const Wrapper = styled.div`
