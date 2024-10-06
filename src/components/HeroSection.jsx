@@ -4,7 +4,6 @@ import HeroImg from '../images/HeroImage.jpg';
 import Typewriter from 'typewriter-effect';
 import { Bio } from '../data/constants.js';
 import styled from "styled-components";
-import _default from "../themes/default.js";
 
 const HeroContainer = styled.div`
   background: ${({ theme }) => theme.card_light};

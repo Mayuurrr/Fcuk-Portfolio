@@ -1,6 +1,6 @@
 import React from 'react';
 import { Bio } from '../data/constants.js';
-import styled, { isStyledComponent } from 'styled-components';
+import styled from 'styled-components';
 
 const Nav = styled.div`
     background-color: ${({ theme }) => theme.card_light};

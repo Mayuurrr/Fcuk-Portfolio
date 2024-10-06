@@ -1,6 +1,5 @@
 import React, { useState } from 'react'; 
 import styled from 'styled-components';
-import _default from '../themes/default.js';
 import ProjectCard from './Cards/ProjectCard.jsx'
 import { projects } from '../data/constants.js'
 
@@ -148,7 +147,7 @@ const Projects = ({openModal,setOpenModal}) => {
               <ProjectCard project={project} openModal={openModal} setOpenModal={setOpenModal}/>
             ))}
           {projects
-            .filter((item) => item.category == toggle)
+            .filter((item) => item.category === toggle)
             .map((project) => (
               <ProjectCard project={project} openModal={openModal} setOpenModal={setOpenModal}/>
             ))}
