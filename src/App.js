@@ -7,6 +7,8 @@ import Skills from './components/Skills.jsx';
 import Education from './components/Education.jsx';
 import Projects from './components/Projects.jsx';
 import Experience from './components/Experience.jsx';
+import Contact from './components/Contact.jsx';
+import Footer from './components/Footer.jsx';
 
 const Body = styled.div`
   background-color: ${({theme}) => theme.bg};
@@ -29,9 +31,12 @@ function App() {
         <Wrapper>
           <Skills/>
           <Experience/>
+          <Projects/>
+        
         </Wrapper>
-        <Projects/>
         <Education/>
+        <Contact/>
+      <Footer/>
       </Body>
     </ThemeProvider>
   );
