@@ -1,106 +1,87 @@
-
-import React from 'react'
-import styled from 'styled-components'
-import Timeline from '@mui/lab/Timeline';
-import TimelineItem from '@mui/lab/TimelineItem';
-import TimelineSeparator from '@mui/lab/TimelineSeparator';
-import TimelineConnector from '@mui/lab/TimelineConnector';
-import TimelineContent from '@mui/lab/TimelineContent';
-import TimelineDot from '@mui/lab/TimelineDot';
+import React, { useState } from 'react';
+import styled from 'styled-components';
 import ExperienceCard from '../components/Cards/ExperienceCard.jsx';
 import { experiences } from '../data/constants.js';
 
-const Container = styled.div`
-background: ${({ theme }) => theme.card_light};
-display: flex;
-flex-direction: column;
-justify-content: center;
-position: relative;
-z-index: 1;
-align-items: center;
-scroll-margin-top: 80px;
-padding-bottom:100px;
+const Section = styled.section`
+  padding: 40px 0 44px 0;
+  border-bottom: 1px solid ${({ theme }) => theme.border};
 
-clip-path: polygon(0 0, 100% 0, 100% 100%, 70% 95%, 0 100%);
-
-`
-
-const Wrapper = styled.div`
-position: relative;
-display: flex;
-justify-content: space-between;
-align-items: center;
-flex-direction: column;
-width: 100%;
-max-width: 1100px;
-gap: 12px;
-@media (max-width: 960px) {
-    flex-direction: column;
-}
-`
-
-export const Title = styled.div`
-font-size: 42px;
-text-align: center;
-font-weight: bold;
-margin-top: 20px;
-  color: ${({ theme }) => theme.text_primary};
-  @media (max-width: 768px) {
-margin-top: 12px;
-      font-size: 32px;
+  @media (max-width: 640px) {
+    padding: 28px 0 32px 0;
   }
 `;
 
-export const Desc = styled.div`
-    font-size: 18px;
-    text-align: center;
-    max-width: 600px;
-    color: ${({ theme }) => theme.text_secondary};
-    @media (max-width: 768px) {
-        font-size: 16px;
-    }
+const HeaderRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap;
 `;
 
-const TimelineSection = styled.div`
-    width: 100%;
-    max-width: 1000px;
-    margin-top: 10px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
+const HeaderBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 `;
 
+const SectionTag = styled.span`
+  font-family: ${({ theme }) => theme.font_mono};
+  font-size: 11px;
+  font-weight: 600;
+  color: #52525B;
+  background: #F4F4F5;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 3px 8px;
+  border-radius: 5px;
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+`;
 
+const SectionTitle = styled.h2`
+  font-size: 26px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.text_primary};
+  letter-spacing: -0.03em;
+`;
+
+const SectionDesc = styled.p`
+  font-size: 14px;
+  color: ${({ theme }) => theme.text_muted};
+`;
+
+const ExperienceList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
 
 const Experience = () => {
-    return (
-        <Container id="experience">
-            <Wrapper>
-                <Title>Experience</Title>
-                <Desc>
-                    My work experience as a software engineer and working on different companies and projects.
-                </Desc>
-                <TimelineSection>
-                    <Timeline>
-                        {experiences.map((experience,index) => (
-                            <TimelineItem>
-                                <TimelineSeparator>
-                                    <TimelineDot variant="outlined" color="secondary" />
-                                    {index !== experiences.length - 1 && <TimelineConnector style={{ background: '#854CE6' }} />}
-                                </TimelineSeparator>
-                                <TimelineContent sx={{ py: '12px', px: 2 }}>
-                                    <ExperienceCard experience={experience}/>
-                                </TimelineContent>
-                            </TimelineItem>
-                        ))}
-                    </Timeline>
+  return (
+    <Section id="experience">
+      <HeaderRow>
+        <HeaderBlock>
+          <SectionTag>Career History</SectionTag>
+          <SectionTitle>Work Experience</SectionTitle>
+          <SectionDesc>
+            Engineering roles focused on platform scale, performance, and API design.
+          </SectionDesc>
+        </HeaderBlock>
+      </HeaderRow>
 
-                </TimelineSection>
-            </Wrapper>
-        </Container>
-    )
-}
+      <ExperienceList>
+        {experiences.map((experience) => (
+          <ExperienceCard
+            key={experience.id}
+            experience={experience}
+          />
+        ))}
+      </ExperienceList>
+    </Section>
+  );
+};
 
-export default Experience
+export default Experience;

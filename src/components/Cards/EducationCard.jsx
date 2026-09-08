@@ -1,150 +1,215 @@
-import React from 'react'
-import styled from 'styled-components'
-
-const Document = styled.img`
-    display: none;
-    height: 70px;
-    width: fit-content;
-    background-color: #000;
-    border-radius: 10px;
-    &:hover{
-        cursor: pointer;
-        opacity: 0.8;
-    }
-`
-
-const Description = styled.div`
-    width: 100%;
-    font-size: 15px;
-    font-weight: 400;
-    color: ${({ theme }) => theme.text_primary + 99};
-    margin-bottom: 10px;
-    @media only screen and (max-width: 768px){
-        font-size: 12px;
-    }
-`
-
-const Span = styled.span`
-overflow: hidden;
-display: -webkit-box;
-max-width: 100%;
--webkit-line-clamp: 4;
--webkit-box-orient: vertical;
-text-overflow: ellipsis;
-`
+import React, { useState, useRef } from 'react';
+import styled from 'styled-components';
 
 const Card = styled.div`
-    width: 650px;
-    border-radius: 10px;
-    box-shadow: rgba(23, 92, 230, 0.15) 0px 4px 24px;
-    padding: 12px 16px;
-    justify-content: space-between;
-    position: relative;
-    overflow: hidden;
-    display: flex;
+  width: 100%;
+  background: #FFFFFF;
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 12px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px -2px rgba(0, 0, 0, 0.02);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  position: relative;
+
+  &:hover {
+    border-color: rgba(0, 0, 0, 0.35);
+    box-shadow: 0 12px 28px -6px rgba(0, 0, 0, 0.09), 0 4px 12px -2px rgba(0, 0, 0, 0.04);
+    transform: translateY(-2px);
+  }
+
+  @media (max-width: 640px) {
+    padding: 18px;
+    gap: 14px;
+  }
+`;
+
+const HeaderRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+
+  @media (max-width: 640px) {
     flex-direction: column;
-    gap: 12px;
-    transition: all 0.3s ease-in-out;
-    &:hover{
-        box-shadow: 0px 0px 20px rgba(0,0,0,0.2);
-        transform: translateY(-5px);
-    }
-    @media only screen and (max-width: 768px){
-        padding: 10px;
-        gap: 8px;
-        width: 300px;
-    }
+    gap: 8px;
+  }
+`;
 
-    &:hover ${Document}{
-        display: flex;
-    }
+const SchoolBlock = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+`;
 
-    &:hover ${Span}{
-        overflow: visible;
-        -webkit-line-clamp: unset;
+const SchoolInitial = styled.div`
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: #18181B;
+  color: #FAFAFA;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: ${({ theme }) => theme.font_mono};
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+`;
 
-    }
-    border: 0.1px solid #854CE6;
-`
+const TitleInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+`;
 
-const Top = styled.div`
-    width: 100%;
-    display: flex;
-    gap: 12px
-`
-
-const Image = styled.img`
-    height: 50px;
-    background-color: #000;
-    border-radius: 10px;
-    margin-top: 4px;
-    @media only screen and (max-width: 768px){
-        height: 40px;
-    }
-`
-
-const Body = styled.div`
-    width: 100%;
-    display: flex;
-    flex-direction: column; 
-`
-
-
-const Name = styled.div`
-    font-size: 18px;
-    font-weight: 600;
-    color: ${({ theme }) => theme.text_primary + 99};
-    @media only screen and (max-width: 768px){
-        font-size: 14px;
-    }
-`
+const SchoolName = styled.h3`
+  font-size: 16.5px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.text_primary};
+  letter-spacing: -0.015em;
+`;
 
 const Degree = styled.div`
-    font-size: 14px;
-    font-weight: 500;
-    color: ${({ theme }) => theme.text_secondary + 99};
-    @media only screen and (max-width: 768px){
-        font-size: 12px;
-    }
-`
+  font-size: 13.5px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.text_secondary};
+`;
 
-const Date = styled.div`
-    font-size: 12px;
-    font-weight: 400;
-    color: ${({ theme }) => theme.text_secondary + 80};
-    @media only screen and (max-width: 768px){
-        font-size: 10px;
-    }
-`
+const MetaBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  white-space: nowrap;
 
-const Grade = styled.div`
-    font-size: 14px;
-    font-weight: 500;
-    color: ${({ theme }) => theme.text_secondary + 99};
-    @media only screen and (max-width: 768px){
-        font-size: 12px;
-    }
-`
+  @media (max-width: 640px) {
+    align-items: flex-start;
+  }
+`;
 
+const DateBadge = styled.span`
+  font-family: ${({ theme }) => theme.font_mono};
+  font-size: 11.5px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.text_secondary};
+  background: ${({ theme }) => theme.bgSubtle};
+  border: 1px solid ${({ theme }) => theme.border};
+  padding: 3px 8px;
+  border-radius: 6px;
+`;
 
+const LocationText = styled.span`
+  font-size: 11.5px;
+  color: ${({ theme }) => theme.text_muted};
+`;
+
+const GradeBadge = styled.span`
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 550;
+  color: ${({ theme }) => theme.text_primary};
+  background: #FAFAFA;
+  border: 1px solid ${({ theme }) => theme.border};
+  padding: 2px 7px;
+  border-radius: 5px;
+  width: fit-content;
+  margin-top: 4px;
+`;
+
+const Description = styled.p`
+  font-size: 13.5px;
+  line-height: 1.6;
+  color: ${({ theme }) => theme.text_secondary};
+`;
+
+const Highlights = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding-top: 10px;
+  border-top: 1px solid ${({ theme }) => theme.borderSubtle};
+`;
+
+const HighlightTag = styled.span`
+  font-size: 11.5px;
+  font-weight: 450;
+  color: ${({ theme }) => theme.text_muted};
+  background: #FAFAFA;
+  border: 1px solid ${({ theme }) => theme.border};
+  padding: 3px 8px;
+  border-radius: 5px;
+  transition: all 0.16s cubic-bezier(0.16, 1, 0.3, 1);
+  cursor: default;
+
+  &:hover {
+    color: #FAFAFA;
+    background: #18181B;
+    border-color: #18181B;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+  }
+`;
 
 const EducationCard = ({ education }) => {
-    return (
-        <Card>
-            <Top>
-                <Image src={education.img} />
-                <Body>
-                    <Name>{education.school}</Name>
-                    <Degree>{education.degree}</Degree>
-                    <Date>{education.date}</Date>
-                </Body>
-            </Top>
-            <Grade><b>Grade: </b>{education.grade}</Grade>
-            <Description>
-                <Span>{education.desc}</Span>
-            </Description>
-        </Card>
-    )
-}
+  const cardRef = useRef(null);
+  const [spotlightPos, setSpotlightPos] = useState({ x: 0, y: 0, opacity: 0 });
 
-export default EducationCard
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setSpotlightPos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+      opacity: 1,
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setSpotlightPos((prev) => ({ ...prev, opacity: 0 }));
+  };
+
+  const initial = education.school ? education.school.charAt(0) : 'E';
+
+  return (
+    <Card
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        background: `radial-gradient(500px circle at ${spotlightPos.x}px ${spotlightPos.y}px, rgba(0, 0, 0, 0.025), transparent 70%), #FFFFFF`,
+      }}
+    >
+      <HeaderRow>
+        <SchoolBlock>
+          <SchoolInitial>{initial}</SchoolInitial>
+          <TitleInfo>
+            <SchoolName>{education.school}</SchoolName>
+            <Degree>{education.degree}</Degree>
+            {education.grade && <GradeBadge>Grade: {education.grade}</GradeBadge>}
+          </TitleInfo>
+        </SchoolBlock>
+
+        <MetaBlock>
+          <DateBadge>{education.date}</DateBadge>
+          {education.location && <LocationText>{education.location}</LocationText>}
+        </MetaBlock>
+      </HeaderRow>
+
+      {education.desc && <Description>{education.desc}</Description>}
+
+      {education.highlights && (
+        <Highlights>
+          {education.highlights.map((item, index) => (
+            <HighlightTag key={index}>{item}</HighlightTag>
+          ))}
+        </Highlights>
+      )}
+    </Card>
+  );
+};
+
+export default EducationCard;

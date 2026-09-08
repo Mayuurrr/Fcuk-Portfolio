@@ -1,173 +1,325 @@
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
-import { useRef } from 'react';
 import emailjs from '@emailjs/browser';
 import { Snackbar, Alert } from '@mui/material';
+import { FiMail, FiPhone, FiMapPin } from 'react-icons/fi';
+import { Bio } from '../data/constants.js';
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-  align-items: center;
-  @media (max-width: 960px) {
-    padding: 0px;
+const Section = styled.section`
+  padding: 40px 0 36px 0;
+
+  @media (max-width: 640px) {
+    padding: 28px 0 28px 0;
   }
 `;
 
-const Wrapper = styled.div`
-  position: relative;
+const HeaderBlock = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-items: center;
   flex-direction: column;
-  width: 100%;
-  max-width: 1350px;
-  padding: 0px 0px 80px 0px;
-  gap: 12px;
-  @media (max-width: 960px) {
-    flex-direction: column;
-  }
+  gap: 6px;
+  margin-bottom: 32px;
 `;
 
-const Title = styled.div`
-font-size: 42px;
-text-align: center;
-font-weight: bold;
-margin-top: 20px;
+const SectionTag = styled.span`
+  font-family: ${({ theme }) => theme.font_mono};
+  font-size: 11px;
+  font-weight: 600;
+  color: #52525B;
+  background: #F4F4F5;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 3px 8px;
+  border-radius: 5px;
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+`;
+
+const SectionTitle = styled.h2`
+  font-size: 26px;
+  font-weight: 700;
   color: ${({ theme }) => theme.text_primary};
+  letter-spacing: -0.03em;
+`;
+
+const SectionDesc = styled.p`
+  font-size: 14px;
+  color: ${({ theme }) => theme.text_muted};
+`;
+
+const ContactGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1.35fr;
+  gap: 32px;
+  width: 100%;
+
   @media (max-width: 768px) {
-margin-top: 12px;
-      font-size: 32px;
+    grid-template-columns: 1fr;
+    gap: 28px;
   }
 `;
 
-export const Desc = styled.div`
-    font-size: 18px;
-    text-align: center;
-    max-width: 600px;
-    color: ${({ theme }) => theme.text_secondary};
-    @media (max-width: 768px) {
-        font-size: 16px;
-    }
+const DirectInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+const InfoCard = styled.div`
+  background: #FFFFFF;
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: ${({ theme }) => theme.shadow_sm};
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+`;
+
+const DirectItem = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+`;
+
+const ItemLabel = styled.span`
+  font-family: ${({ theme }) => theme.font_mono};
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: ${({ theme }) => theme.text_muted};
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  .label-icon {
+    font-size: 13px;
+    color: ${({ $iconColor }) => $iconColor || '#71717A'};
+  }
+`;
+
+const EmailRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+`;
+
+const ItemValue = styled.a`
+  font-size: 14px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.text_primary};
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`;
+
+const CopyButton = styled.button`
+  font-family: ${({ theme }) => theme.font_mono};
+  font-size: 11px;
+  color: ${({ theme }) => theme.text_secondary};
+  background: ${({ theme }) => theme.bgSubtle};
+  border: 1px solid ${({ theme }) => theme.border};
+  padding: 3px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+
+  &:hover {
+    color: ${({ theme }) => theme.text_primary};
+    border-color: rgba(0, 0, 0, 0.18);
+  }
+`;
+
+const PlainValue = styled.span`
+  font-size: 14px;
+  font-weight: 450;
+  color: ${({ theme }) => theme.text_primary};
+`;
+
+const SubValue = styled.span`
+  font-size: 12px;
+  color: ${({ theme }) => theme.text_muted};
+`;
+
+const LinksRow = styled.div`
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-top: 14px;
+  border-top: 1px solid ${({ theme }) => theme.borderSubtle};
+`;
+
+const OutLink = styled.a`
+  font-size: 12.5px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.text_secondary};
+  background: #FAFAFA;
+  border: 1px solid ${({ theme }) => theme.border};
+  padding: 5px 11px;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.15s ease;
+
+  &:hover {
+    color: ${({ theme }) => theme.text_primary};
+    border-color: rgba(0, 0, 0, 0.18);
+    background: #F4F4F5;
+  }
 `;
 
 const ContactForm = styled.form`
-  width: 95%;
-  max-width: 600px;
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 12px;
+  padding: 24px;
+  background: #FFFFFF;
+  box-shadow: ${({ theme }) => theme.shadow_sm};
   display: flex;
   flex-direction: column;
-  background-color: ${({ theme }) => theme.card};
-  padding: 32px;
-  border-radius: 16px;
-  box-shadow: rgba(23, 92, 230, 0.15) 0px 4px 24px;
-  margin-top: 28px;
-  gap: 12px;
-`;
+  gap: 14px;
 
-const ContactTitle = styled.div`
-  font-size: 24px;
-  margin-bottom: 6px;
-  text-align: center;
-  font-weight: 600;
-  color: ${({ theme }) => theme.text_primary};
-`;
-
-const ContactInput = styled.input`
-  flex: 1;
-  background-color: transparent;
-  border: 1px solid ${({ theme }) => theme.text_secondary};
-  outline: none;
-  font-size: 18px;
-  color: ${({ theme }) => theme.text_primary};
-  border-radius: 12px;
-  padding: 12px 16px;
-  &:focus {
-    border: 1px solid ${({ theme }) => theme.primary};
+  @media (max-width: 640px) {
+    padding: 18px;
   }
 `;
 
-const ContactInputMessage = styled.textarea`
-  flex: 1;
-  background-color: transparent;
-  border: 1px solid ${({ theme }) => theme.text_secondary};
-  outline: none;
-  font-size: 18px;
+const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+`;
+
+const Label = styled.label`
+  font-size: 12px;
+  font-weight: 500;
+  color: ${({ theme }) => theme.text_secondary};
+`;
+
+const Input = styled.input`
+  font-size: 13.5px;
   color: ${({ theme }) => theme.text_primary};
-  border-radius: 12px;
-  padding: 12px 16px;
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 7px;
+  padding: 9px 12px;
+  background: #FAFAFA;
+  outline: none;
+  transition: all 0.15s ease;
+
   &:focus {
-    border: 1px solid ${({ theme }) => theme.primary};
+    border-color: #18181B;
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(24, 24, 27, 0.08);
+  }
+
+  &::placeholder {
+    color: #A1A1AA;
+    font-size: 13px;
   }
 `;
 
-const ContactButton = styled.input`
-  width: 100%;
-  text-decoration: none;
-  text-align: center;
-  background: hsla(271, 100%, 50%, 1);
-  background: linear-gradient(225deg, hsla(271, 100%, 50%, 1) 0%, hsla(294, 100%, 50%, 1) 100%);
-  padding: 13px 16px;
-  margin-top: 2px;
-  border-radius: 12px;
-  border: none;
+const TextArea = styled.textarea`
+  font-size: 13.5px;
   color: ${({ theme }) => theme.text_primary};
-  font-size: 18px;
-  font-weight: 600;
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 7px;
+  padding: 9px 12px;
+  background: #FAFAFA;
+  outline: none;
+  resize: vertical;
+  min-height: 110px;
+  transition: all 0.15s ease;
+
+  &:focus {
+    border-color: #18181B;
+    background: #FFFFFF;
+    box-shadow: 0 0 0 3px rgba(24, 24, 27, 0.08);
+  }
+
+  &::placeholder {
+    color: #A1A1AA;
+    font-size: 13px;
+  }
+`;
+
+const SubmitButton = styled.button`
+  font-size: 13px;
+  font-weight: 500;
+  color: #FAFAFA;
+  background: #18181B;
+  border: 1px solid #18181B;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.18);
+  border-radius: 7px;
+  padding: 10px 16px;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.15s ease;
+  margin-top: 4px;
 
   &:hover {
-    background: linear-gradient(225deg, hsla(294, 100%, 50%, 1) 0%, hsla(271, 100%, 50%, 1) 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    background: #27272A;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
   }
 
   &:active {
-    transform: scale(0.95);
-    transition: transform 0.1s ease;
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
   }
 `;
 
 const Contact = () => {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [statusMsg, setStatusMsg] = useState('');
+  const [isError, setIsError] = useState(false);
+  const [copied, setCopied] = useState(false);
   const form = useRef();
+
+  const handleCopyEmail = () => {
+    navigator.clipboard.writeText(Bio.email);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const email = form.current.from_email.value;
-    const name = form.current.from_name.value;
-    const subject = form.current.subject.value;
-    const message = form.current.message.value;
+    const email = form.current.from_email.value.trim();
+    const name = form.current.from_name.value.trim();
+    const subject = form.current.subject.value.trim();
+    const message = form.current.message.value.trim();
 
     if (!email || !name || !subject || !message) {
-      alert('All fields are required!');
+      setStatusMsg('Please complete all required fields.');
+      setIsError(true);
+      setOpen(true);
       return;
     }
 
-    if (name.length < 2) {
-      alert('Name must be at least 2 characters long.');
-      return;
-    }
-
-    if (subject.length < 3) {
-      alert('Subject must be at least 3 characters long.');
-      return;
-    }
-
-    if (message.length < 10 || message.length > 500) {
-      alert('Message must be between 10 and 500 characters.');
-      return;
-    }
-
-    emailjs.sendForm('service_yfaiu5y', 'template_mofb6ha', form.current, 'rLhf1KLdW_t39kn7Z')
-      .then((result) => {
-        setOpen(true);
-        form.current.reset();
-      }, (error) => {
-        console.log(error.text);
-      });
+    setLoading(true);
+    emailjs
+      .sendForm('service_yfaiu5y', 'template_mofb6ha', form.current, 'rLhf1KLdW_t39kn7Z')
+      .then(
+        () => {
+          setLoading(false);
+          setStatusMsg('Message sent successfully. I will get back to you shortly.');
+          setIsError(false);
+          setOpen(true);
+          form.current.reset();
+        },
+        (error) => {
+          setLoading(false);
+          console.error(error);
+          setStatusMsg('Failed to send message. Please contact mayurhegde11@gmail.com directly.');
+          setIsError(true);
+          setOpen(true);
+        }
+      );
   };
 
   const handleClose = () => {
@@ -175,54 +327,119 @@ const Contact = () => {
   };
 
   return (
-    <Container>
-      <Wrapper>
-        <Title>Contact</Title>
-        <Desc>Feel free to reach out to me for any questions or opportunities!</Desc>
+    <Section id="contact">
+      <HeaderBlock>
+        <SectionTag>Direct Inquiry</SectionTag>
+        <SectionTitle>Contact &amp; Connect</SectionTitle>
+        <SectionDesc>Open to software engineering opportunities, technical discussions, and collaborations.</SectionDesc>
+      </HeaderBlock>
+
+      <ContactGrid>
+        <DirectInfo>
+          <InfoCard>
+            <DirectItem>
+              <ItemLabel>
+                <FiMail className="label-icon" />
+                <span>Email Address</span>
+              </ItemLabel>
+              <EmailRow>
+                <ItemValue href={`mailto:${Bio.email}`}>{Bio.email}</ItemValue>
+                <CopyButton type="button" onClick={handleCopyEmail}>
+                  {copied ? 'Copied ✓' : 'Copy'}
+                </CopyButton>
+              </EmailRow>
+            </DirectItem>
+
+            <DirectItem>
+              <ItemLabel>
+                <FiPhone className="label-icon" />
+                <span>Phone</span>
+              </ItemLabel>
+              <ItemValue href={`tel:${Bio.phone}`}>{Bio.phone}</ItemValue>
+            </DirectItem>
+
+            <DirectItem>
+              <ItemLabel>
+                <FiMapPin className="label-icon" />
+                <span>Base Location</span>
+              </ItemLabel>
+              <PlainValue>{Bio.location}</PlainValue>
+              <SubValue>Timezone: Indian Standard Time (UTC+5:30)</SubValue>
+            </DirectItem>
+
+            <LinksRow>
+              <OutLink href={Bio.github} target="_blank" rel="noopener noreferrer">
+                GitHub ↗
+              </OutLink>
+              <OutLink href={Bio.linkedin} target="_blank" rel="noopener noreferrer">
+                LinkedIn ↗
+              </OutLink>
+              <OutLink href={Bio.resume} target="_blank" rel="noopener noreferrer">
+                Resume ↗
+              </OutLink>
+            </LinksRow>
+          </InfoCard>
+        </DirectInfo>
+
         <ContactForm ref={form} onSubmit={handleSubmit}>
-          <ContactTitle>Email Me 🚀</ContactTitle>
-          <ContactInput 
-            type="email" 
-            placeholder="Your Email" 
-            name="from_email" 
-            required 
-          />
-          <ContactInput 
-            type="text" 
-            placeholder="Your Name" 
-            name="from_name" 
-            required 
-            minLength={2} 
-          />
-          <ContactInput 
-            type="text" 
-            placeholder="Subject" 
-            name="subject" 
-            required 
-            minLength={3} 
-          />
-          <ContactInputMessage 
-            placeholder="Message" 
-            rows="4" 
-            name="message" 
-            required 
-            minLength={10} 
-            maxLength={500} 
-          />
-          <ContactButton type="submit" value="Send" />
+          <FormGroup>
+            <Label>Your Name</Label>
+            <Input
+              type="text"
+              placeholder="e.g. Alex Morgan"
+              name="from_name"
+              required
+              minLength={2}
+            />
+          </FormGroup>
+
+          <FormGroup>
+            <Label>Email Address</Label>
+            <Input
+              type="email"
+              placeholder="alex@company.com"
+              name="from_email"
+              required
+            />
+          </FormGroup>
+
+          <FormGroup>
+            <Label>Subject</Label>
+            <Input
+              type="text"
+              placeholder="Software Engineer Opportunity / Discussion"
+              name="subject"
+              required
+              minLength={3}
+            />
+          </FormGroup>
+
+          <FormGroup>
+            <Label>Message</Label>
+            <TextArea
+              placeholder="Details about the role, team, or project..."
+              rows="3"
+              name="message"
+              required
+              minLength={10}
+              maxLength={1000}
+            />
+          </FormGroup>
+
+          <SubmitButton type="submit" disabled={loading}>
+            {loading ? 'Sending...' : 'Send Message ↗'}
+          </SubmitButton>
         </ContactForm>
-        <Snackbar
-          open={open}
-          autoHideDuration={6000}
-          onClose={handleClose}
-        >
-          <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-            Email sent successfully!
-          </Alert>
-        </Snackbar>
-      </Wrapper>
-    </Container>
+      </ContactGrid>
+
+      <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+        <Alert onClose={handleClose} severity={isError ? 'error' : 'success'} sx={{ width: '100%' }}>
+          {statusMsg}
+        </Alert>
+      </Snackbar>
+    </Section>
   );
 };
 
 export default Contact;
+

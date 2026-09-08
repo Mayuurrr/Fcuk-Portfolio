@@ -1,114 +1,172 @@
+import React from 'react';
 import styled from 'styled-components';
-import FacebookIcon from '@mui/icons-material/Facebook';
-import TwitterIcon from '@mui/icons-material/Twitter';
-import LinkedInIcon from '@mui/icons-material/LinkedIn';
-import InstagramIcon from '@mui/icons-material/Instagram';
-import { Bio } from '../data/constants';
+import { Bio } from '../data/constants.js';
 
-const FooterContainer = styled.div`
+const FooterContainer = styled.footer`
   width: 100%;
-  padding: 2rem 0;
-  display: flex;
-  justify-content: center;
-  //background: linear-gradient(100.26deg, rgba(0, 102, 255, 0.05) 42.33%, rgba(150, 0, 225, 0.05) 127.07%);
+  border-top: 1px solid ${({ theme }) => theme.border};
+  background-color: #FFFFFF;
+  padding: 28px 0 36px;
+  margin-top: 0;
 `;
 
-
-const FooterWrapper = styled.footer`
+const FooterWrapper = styled.div`
   width: 100%;
-  max-width: 1200px;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  align-items: center;
-  padding: 1rem;
-  color: ${({ theme }) => theme.text_primary};
+  gap: 24px;
+
+  @media (max-width: 640px) {
+    padding: 0 16px;
+    gap: 20px;
+  }
 `;
 
-const Logo = styled.h1`
-  font-weight: bold;
-  font-size: 28px;
-  color: ${({ theme }) => theme.primary};
-`;
-
-const Nav = styled.nav`
-  width: 100%;
-  max-width: 800px;
-  margin-top: 0.5rem;
+const TopRow = styled.div`
   display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  justify-content: center;
-  @media (max-width: 768px) {
-    flex-wrap: wrap;
-    gap: 1rem;
-    justify-content: center;
-    text-align: center;
-    font-size: 12px;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+`;
+
+const Brand = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+`;
+
+const BrandName = styled.span`
+  font-size: 14px;
+  font-weight: 600;
+  color: ${({ theme }) => theme.text_primary};
+  letter-spacing: -0.01em;
+`;
+
+const BrandRole = styled.span`
+  font-size: 13px;
+  color: ${({ theme }) => theme.text_muted};
+`;
+
+const NavLinks = styled.nav`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  align-items: center;
+
+  @media (max-width: 640px) {
+    gap: 14px;
   }
 `;
 
 const NavLink = styled.a`
-color: ${({ theme }) => theme.text_primary};
+  font-size: 13px;
+  color: ${({ theme }) => theme.text_secondary};
   text-decoration: none;
-  font-size: 1.2rem;
-  transition: color 0.2s ease-in-out;
+  font-weight: 500;
+  transition: color 0.15s ease;
+
   &:hover {
-    color: ${({ theme }) => theme.primary};
-  }
-  @media (max-width: 768px) {
-    font-size: 1rem;
+    color: ${({ theme }) => theme.text_primary};
   }
 `;
 
-const SocialMediaIcons = styled.div`
+const BottomRow = styled.div`
   display: flex;
-  margin-top: 1rem;
-`;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-top: 20px;
+  border-top: 1px solid ${({ theme }) => theme.borderSubtle};
+  font-size: 12.5px;
+  color: ${({ theme }) => theme.text_muted};
 
-const SocialMediaIcon = styled.a`
-  display: inline-block;
-  margin: 0 1rem;
-  font-size: 1.5rem;
-  color: ${({ theme }) => theme.text_primary};
-  transition: color 0.2s ease-in-out;
-  &:hover {
-    color: ${({ theme }) => theme.primary};
+  @media (max-width: 640px) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
   }
 `;
 
-const Copyright = styled.p`
-  margin-top: 1.5rem;
-  font-size: 0.9rem;
-  color: ${({ theme }) => theme.soft2};
-  text-align: center;
+const SocialLinks = styled.div`
+  display: flex;
+  gap: 18px;
+  align-items: center;
+`;
+
+const TextLink = styled.a`
+  font-size: 12.5px;
+  color: ${({ theme }) => theme.text_secondary};
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: ${({ theme }) => theme.text_primary};
+    text-decoration: underline;
+  }
+`;
+
+const Copyright = styled.div`
+  font-size: 12.5px;
+  color: ${({ theme }) => theme.text_muted};
+  font-family: ${({ theme }) => theme.font_mono};
 `;
 
 function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
     <FooterContainer>
       <FooterWrapper>
-        <Logo>Mayur Hegde</Logo>
-        <Nav>
-          <NavLink href="#about">About</NavLink>
-          <NavLink href="#skills">Skills</NavLink>
-          <NavLink href="#experience">Experience</NavLink>
-          <NavLink href="#projects">Projects</NavLink>
-          <NavLink href="#education">Education</NavLink>
-        </Nav>
-        <SocialMediaIcons>
-          <SocialMediaIcon href={Bio.facebook} target="display"><FacebookIcon /></SocialMediaIcon>
-          <SocialMediaIcon href={Bio.twitter} target="display"><TwitterIcon /></SocialMediaIcon>
-          <SocialMediaIcon href={Bio.linkedin} target="display"><LinkedInIcon /></SocialMediaIcon>
-          <SocialMediaIcon href={Bio.insta} target="display"><InstagramIcon /></SocialMediaIcon>
-        </SocialMediaIcons>
-        <Copyright>
-          &copy; 2024 Mayur Hegde. All rights reserved.
-        </Copyright>
+        <TopRow>
+          <Brand>
+            <BrandName>{Bio.name}</BrandName>
+            <BrandRole>{Bio.roles ? Bio.roles.join(' • ') : 'Software Engineer'}</BrandRole>
+          </Brand>
 
+          <NavLinks>
+            <NavLink href="#about">About</NavLink>
+            <NavLink href="#skills">Skills</NavLink>
+            <NavLink href="#experience">Experience</NavLink>
+            <NavLink href="#projects">Projects</NavLink>
+            <NavLink href="#education">Education</NavLink>
+            <NavLink href="#contact">Contact</NavLink>
+          </NavLinks>
+        </TopRow>
+
+        <BottomRow>
+          <Copyright>
+            &copy; {currentYear} {Bio.name}. Designed &amp; built with modern React &amp; Vite.
+          </Copyright>
+
+          <SocialLinks>
+            <TextLink href={Bio.github} target="_blank" rel="noopener noreferrer">
+              GitHub ↗
+            </TextLink>
+            <TextLink href={Bio.linkedin} target="_blank" rel="noopener noreferrer">
+              LinkedIn ↗
+            </TextLink>
+            <TextLink href={Bio.resume} target="_blank" rel="noopener noreferrer">
+              Resume ↗
+            </TextLink>
+            <TextLink href={`mailto:${Bio.email}`}>
+              Email ↗
+            </TextLink>
+          </SocialLinks>
+        </BottomRow>
       </FooterWrapper>
     </FooterContainer>
   );
 }
 
-export default Footer;
+export default Footer;

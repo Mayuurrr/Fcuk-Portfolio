@@ -1,155 +1,203 @@
-import React from 'react'
-import styled from 'styled-components'
-import { skills } from '../data/constants.js'
+import React, { useState, useRef } from 'react';
+import styled from 'styled-components';
+import { skills } from '../data/constants.js';
+import { getSkillDetails } from '../utils/skillIcons.jsx';
 
-const Container = styled.div`
-background: ${({ theme }) => theme.card_light};
-display: flex;
-flex-direction: column;
-justify-content: center;
-position: relative;
-z-index: 1;
-align-items: center;
-scroll-margin-top: 80px;
-padding-bottom: 120px;
+const Section = styled.section`
+  padding: 40px 0 44px 0;
+  border-bottom: 1px solid ${({ theme }) => theme.border};
 
-clip-path: polygon(0 0, 100% 0, 100% 100%, 70% 95%, 0 100%);
-`
-
-const Wrapper = styled.div`
-position: relative;
-display: flex;
-justify-content: space-between;
-align-items: center;
-flex-direction: column;
-width: 100%;
-max-width: 1100px;
-gap: 12px;
-@media (max-width: 960px) {
-    flex-direction: column;
-}
-`
-
-export const Title = styled.div`
-font-size: 42px;
-text-align: center;
-font-weight: bold;
-margin-top: 20px;
-  color: ${({ theme }) => theme.text_primary};
-  @media (max-width: 768px) {
-margin-top: 12px;
-      font-size: 32px;
+  @media (max-width: 640px) {
+    padding: 28px 0 32px 0;
   }
 `;
 
-export const Desc = styled.div`
-    font-size: 18px;
-    text-align: center;
-    max-width: 600px;
-    color: ${({ theme }) => theme.text_secondary};
-    @media (max-width: 768px) {
-        font-size: 16px;
-    }
-`;
-
-const SkillsContainer = styled.div`
-  width: 100%;
+const HeaderRow = styled.div`
   display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24px;
+  gap: 16px;
   flex-wrap: wrap;
-  margin-top: 30px;
-  gap: 30px;
-  justify-content: center;
-`
+`;
 
-const Skill = styled.div`
-  width: 100%;
-  max-width: 500px;
-  background: ${({ theme }) => theme.card};
-  border: 0.1px solid #854CE6;
-  box-shadow: rgba(23, 92, 230, 0.3) 0px 4px 24px;
-  border-radius: 50px;
-  padding: 18px 36px;
-  @media (max-width: 768px) {
-    max-width: 400px;
-    padding: 10px 36px;
-  }
-  @media (max-width: 500px) {
-    max-width: 330px;
-    padding: 10px 36px;
-  }
+const HeaderBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+`;
 
+const SectionTag = styled.span`
+  font-family: ${({ theme }) => theme.font_mono};
+  font-size: 11px;
+  font-weight: 600;
+  color: #52525B;
+  background: #F4F4F5;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 3px 8px;
+  border-radius: 5px;
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+`;
 
-`
-
-const SkillTitle = styled.h2`
-  font-size: 24px;
+const SectionTitle = styled.h2`
+  font-size: 26px;
   font-weight: 700;
   color: ${({ theme }) => theme.text_primary};
-  margin-bottom: 20px;
-  text-align: center;
-`
+  letter-spacing: -0.03em;
+`;
 
-const SkillList = styled.div`
-  display: flex;
-  justify-content: center; 
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-bottom: 20px;
-`
+const SectionDesc = styled.p`
+  font-size: 14px;
+  color: ${({ theme }) => theme.text_muted};
+`;
 
-const SkillItem = styled.div`
-  font-size: 16px;
-  font-weight: 400;
-  color: ${({ theme }) => theme.text_primary + 95};
-  border: 1px solid ${({ theme }) => theme.text_primary + 95};
-  border-radius: 50px;
-  padding: 12px 16px;
+const Grid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+
+  @media (max-width: 680px) {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+`;
+
+const CategoryCard = styled.div`
+  border: 1px solid ${({ theme }) => theme.border};
+  border-radius: 12px;
+  padding: 22px;
+  background: #FFFFFF;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 12px -2px rgba(0, 0, 0, 0.02);
   display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+  position: relative;
+
+  &:hover {
+    border-color: rgba(0, 0, 0, 0.25);
+    box-shadow: 0 10px 24px -4px rgba(0, 0, 0, 0.08);
+    transform: translateY(-2px);
+  }
+`;
+
+const CategoryHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  justify-content: center;
+`;
+
+const CategoryTitle = styled.h3`
+  font-size: 15px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.text_primary};
+  letter-spacing: -0.015em;
+`;
+
+const TagList = styled.div`
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  @media (max-width: 768px) {
-    font-size: 14px;
-    padding: 8px 12px;
-  }
-  @media (max-width: 500px) {
-    font-size: 14px;
-    padding: 6px 12px;
-  }
-`
+`;
 
-const SkillImage = styled.img`
-  width: 22px;
-  height: 22px;
-`
+const SkillBadge = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #27272A;
+  background: #FFFFFF;
+  border: 1px solid ${({ theme }) => theme.border};
+  padding: 5px 10px;
+  border-radius: 7px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: all 0.16s ease;
+  cursor: default;
 
+  .icon-holder {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    color: ${({ $color }) => $color || '#71717A'};
+    transition: transform 0.16s ease;
+  }
+
+  &:hover {
+    color: #09090B;
+    background: #FAFAFA;
+    border-color: rgba(0, 0, 0, 0.25);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+
+    .icon-holder {
+      transform: scale(1.12);
+    }
+  }
+`;
+
+const SkillCard = ({ cat }) => {
+  const cardRef = useRef(null);
+  const [spotlightPos, setSpotlightPos] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e) => {
+    if (!cardRef.current) return;
+    const rect = cardRef.current.getBoundingClientRect();
+    setSpotlightPos({
+      x: e.clientX - rect.left,
+      y: e.clientY - rect.top,
+    });
+  };
+
+  return (
+    <CategoryCard
+      ref={cardRef}
+      onMouseMove={handleMouseMove}
+      style={{
+        background: `radial-gradient(380px circle at ${spotlightPos.x}px ${spotlightPos.y}px, rgba(0, 0, 0, 0.028), transparent 70%), #FFFFFF`,
+      }}
+    >
+      <CategoryHeader>
+        <CategoryTitle>{cat.category}</CategoryTitle>
+      </CategoryHeader>
+      <TagList>
+        {cat.items.map((skill, sIdx) => {
+          const { Icon, color } = getSkillDetails(skill);
+          return (
+            <SkillBadge key={sIdx} $color={color}>
+              <span className="icon-holder">
+                <Icon />
+              </span>
+              <span>{skill}</span>
+            </SkillBadge>
+          );
+        })}
+      </TagList>
+    </CategoryCard>
+  );
+};
 
 const Skills = () => {
   return (
-    <Container id="skills">
-      <Wrapper>
-        <Title>Skills</Title>
-        <Desc>Here are some of my skills on which I have been working on for the past 2 years.
-        </Desc>
-        <SkillsContainer>
-          {skills.map((skill) => (
-            <Skill>
-              <SkillTitle>{skill.title}</SkillTitle>
-              <SkillList>
-                {skill.skills.map((item) => (
-                  <SkillItem>
-                    <SkillImage src={item.image} />
-                    {item.name}
-                  </SkillItem>
-                ))}
-              </SkillList>
-            </Skill>
-          ))}
+    <Section id="skills">
+      <HeaderRow>
+        <HeaderBlock>
+          <SectionTag>Technical Stack</SectionTag>
+          <SectionTitle>Skills &amp; Technologies</SectionTitle>
+          <SectionDesc>Production toolset spanning full-stack web, cloud, and distributed architectures.</SectionDesc>
+        </HeaderBlock>
+      </HeaderRow>
 
-        </SkillsContainer>
-      </Wrapper>
-    </Container>
-  )
-}
+      <Grid>
+        {skills.map((cat, idx) => (
+          <SkillCard key={idx} cat={cat} />
+        ))}
+      </Grid>
+    </Section>
+  );
+};
 
-export default Skills
+export default Skills;

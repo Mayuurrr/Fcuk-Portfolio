@@ -1,160 +1,164 @@
-import React, { useState } from 'react'; 
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import ProjectCard from './Cards/ProjectCard.jsx'
-import { projects } from '../data/constants.js'
+import ProjectCard from './Cards/ProjectCard.jsx';
+import { projects } from '../data/constants.js';
 
-export const Container = styled.div`
-    background: linear-gradient(343.07deg, rgba(132, 59, 206, 0.06) 5.71%, rgba(132, 59, 206, 0) 64.83%);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    position: relative;
-    z-index: 1;
-    align-items: center;
-    scroll-margin-top: 80px;
-    clip-path: polygon(0 0, 100% 0, 100% 100%,100% 98%, 0 100%);
-`;
+const Section = styled.section`
+  padding: 40px 0 44px 0;
+  border-bottom: 1px solid ${({ theme }) => theme.border};
 
-export const Wrapper = styled.div`
-    position: relative;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-direction: column;
-    width: 100%;
-    max-width: 1350px;
-    padding: 10px 0px 100px 0;
-    gap: 12px;
-    @media (max-width: 960px) {
-        flex-direction: column;
-    }
-`;
-
-export const Title = styled.div`
-font-size: 42px;
-text-align: center;
-font-weight: 600;
-margin-top: 20px;
-  color: ${({ theme }) => theme.text_primary};
-  @media (max-width: 768px) {
-      margin-top: 12px;
-      font-size: 32px;
+  @media (max-width: 640px) {
+    padding: 28px 0 32px 0;
   }
 `;
 
-export const Desc = styled.div`
-    font-size: 18px;
-    text-align: center;
-    max-width: 600px;
-    color: ${({ theme }) => theme.text_secondary};
-    @media (max-width: 768px) {
-        margin-top: 12px;
-        font-size: 16px;
-    }
+const HeaderRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 24px;
+  gap: 16px;
+  flex-wrap: wrap;
 `;
 
-export const ToggleButtonGroup = styled.div`
-    display: flex;
-    border: 1.5px solid ${({ theme }) => theme.primary};
-    color: ${({ theme }) => theme.primary};
-    font-size: 16px;
-    border-radius: 12px;
-    font-weight: 500;
-    margin: 22px 0px;
-    @media (max-width: 768px) {
-        font-size: 12px;
-    }
-`
-
-export const ToggleButton = styled.div`
-    padding: 8px 18px;
-    border-radius: 6px;
-    cursor: pointer;
-    ${({ active, theme }) =>
-        active && `
-    background: ${theme.primary + 20};
-    `
-    }
-    &:hover {
-        background: ${({ theme }) => theme.primary + 8};
-    }
-    @media (max-width: 768px) {
-        padding: 6px 8px;
-        border-radius: 4px;
-    }
-`
-export const Divider = styled.div`
-    width: 1.5px;
-    background: ${({ theme }) => theme.primary};
-`
-
-
-export const CardContainer = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 28px;
-    flex-wrap: wrap;
-    // display: grid;
-    // grid-template-columns: repeat(3, 1fr);
-    // grid-gap: 32px;
-    // grid-auto-rows: minmax(100px, auto);
-    // @media (max-width: 960px) {
-    //     grid-template-columns: repeat(2, 1fr);
-    // }
-    // @media (max-width: 640px) {
-    //     grid-template-columns: repeat(1, 1fr);
-    // }
+const HeaderBlock = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 `;
 
-const Projects = ({openModal,setOpenModal}) => {
-  const [toggle, setToggle] = useState('all');
+const SectionTag = styled.span`
+  font-family: ${({ theme }) => theme.font_mono};
+  font-size: 11px;
+  font-weight: 600;
+  color: #52525B;
+  background: #F4F4F5;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 3px 8px;
+  border-radius: 5px;
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+`;
+
+const SectionTitle = styled.h2`
+  font-size: 26px;
+  font-weight: 700;
+  color: ${({ theme }) => theme.text_primary};
+  letter-spacing: -0.03em;
+`;
+
+const SectionDesc = styled.p`
+  font-size: 14px;
+  color: ${({ theme }) => theme.text_muted};
+`;
+
+const ControlsRow = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  margin-bottom: 24px;
+`;
+
+const FilterGroup = styled.div`
+  display: flex;
+  gap: 6px;
+  background: #FFFFFF;
+  padding: 3px;
+  border-radius: 8px;
+  border: 1px solid ${({ theme }) => theme.border};
+  box-shadow: ${({ theme }) => theme.shadow_sm};
+`;
+
+const FilterButton = styled.button`
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 6px;
+  border: none;
+  background: ${({ $active }) => ($active ? '#18181B' : 'transparent')};
+  color: ${({ $active }) => ($active ? '#FAFAFA' : '#71717A')};
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  transition: all 0.15s ease;
+
+  span {
+    font-family: ${({ theme }) => theme.font_mono};
+    font-size: 10.5px;
+    opacity: ${({ $active }) => ($active ? '0.8' : '0.6')};
+  }
+
+  &:hover {
+    color: ${({ $active }) => ($active ? '#FAFAFA' : '#18181B')};
+  }
+`;
+
+const UniformGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+`;
+
+const Projects = () => {
+  const [filter, setFilter] = useState('All');
+
+  const filteredProjects =
+    filter === 'All'
+      ? projects
+      : projects.filter((item) => item.category.toLowerCase() === filter.toLowerCase());
+
+  const getCount = (cat) => {
+    if (cat === 'All') return projects.length;
+    return projects.filter((p) => p.category.toLowerCase() === cat.toLowerCase()).length;
+  };
+
   return (
-    <Container id="projects">
-      <Wrapper>
-        <Title>Projects</Title>
-        <Desc>
-          I have worked on a wide range of projects. From web apps to android apps. Here are some of my projects.
-        </Desc>
-        <ToggleButtonGroup >
-          {toggle === 'all' ?
-            <ToggleButton active value="all" onClick={() => setToggle('all')}>All</ToggleButton>
-            :
-            <ToggleButton value="all" onClick={() => setToggle('all')}>All</ToggleButton>
-          }
-          <Divider />
-          {toggle === 'web app' ?
-            <ToggleButton active value="web app" onClick={() => setToggle('web app')}>WEB APP'S</ToggleButton>
-            :
-            <ToggleButton value="web app" onClick={() => setToggle('web app')}>WEB APP'S</ToggleButton>
-          }
-          <Divider />
-          {toggle === 'android app' ?
-            <ToggleButton active value="android app" onClick={() => setToggle('android app')}>ANDROID APP'S</ToggleButton>
-            :
-            <ToggleButton value="android app" onClick={() => setToggle('android app')}>ANDROID APP'S</ToggleButton>
-          }
-          <Divider />
-          {toggle === 'machine learning' ?
-            <ToggleButton active value="machine learning" onClick={() => setToggle('machine learning')}>MACHINE LEARNING</ToggleButton>
-            :
-            <ToggleButton value="machine learning" onClick={() => setToggle('machine learning')}>MACHINE LEARNING</ToggleButton>
-          }
-        </ToggleButtonGroup>
-        <CardContainer>
-          {toggle === 'all' && projects
-            .map((project) => (
-              <ProjectCard project={project} openModal={openModal} setOpenModal={setOpenModal}/>
-            ))}
-          {projects
-            .filter((item) => item.category === toggle)
-            .map((project) => (
-              <ProjectCard project={project} openModal={openModal} setOpenModal={setOpenModal}/>
-            ))}
-        </CardContainer>
-      </Wrapper>
-    </Container>
-  )
-}
+    <Section id="projects">
+      <HeaderRow>
+        <HeaderBlock>
+          <SectionTag>Selected Works</SectionTag>
+          <SectionTitle>Technical Projects</SectionTitle>
+          <SectionDesc>
+            Full-stack systems and user interfaces built with React, Node.js, and serverless AWS.
+          </SectionDesc>
+        </HeaderBlock>
+      </HeaderRow>
 
-export default Projects
+      <ControlsRow>
+        <FilterGroup>
+          {['All', 'Full Stack', 'Frontend'].map((category) => (
+            <FilterButton
+              key={category}
+              $active={filter === category}
+              onClick={() => setFilter(category)}
+            >
+              {category} <span>({getCount(category)})</span>
+            </FilterButton>
+          ))}
+        </FilterGroup>
+      </ControlsRow>
+
+      <UniformGrid>
+        {filteredProjects.map((project, idx) => (
+          <ProjectCard
+            key={project.id || project.title}
+            project={project}
+            index={idx}
+          />
+        ))}
+      </UniformGrid>
+    </Section>
+  );
+};
+
+export default Projects;
+
