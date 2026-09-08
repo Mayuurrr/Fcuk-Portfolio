@@ -199,8 +199,8 @@ export const projects = [
     ],
     image: EditoImg,
     tags: ["React", "Vite", "Socket.IO", "Express.js", "Node.js", "Jest", "WebSockets"],
-    github: "https://github.com/Mayuurrr",
-    webapp: "https://github.com/Mayuurrr",
+    github: "https://github.com/Mayuurrr/Edito",
+    webapp: "https://edito-client.onrender.com/",
   },
   {
     id: 1,
@@ -217,8 +217,8 @@ export const projects = [
     ],
     image: AetherImg,
     tags: ["MERN", "React", "Redux", "Node.js", "Express.js", "MongoDB", "JWT Auth"],
-    github: "https://github.com/Mayuurrr",
-    webapp: "https://github.com/Mayuurrr",
+    github: "https://github.com/Mayuurrr/FcukEcommerce",
+    webapp: "https://aether-essentials.vercel.app/",
   },
   {
     id: 2,
