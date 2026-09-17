@@ -10,7 +10,7 @@ export const Bio = {
   summary:
     "Full-stack Software Engineer with 2+ years of production experience shipping web applications in React, TypeScript, Angular, and Node.js on serverless AWS. At Simplilearn, contributed to platforms serving 70,000+ monthly learners and 2M+ registered users. Currently at Techpearl building B2B SaaS event systems with real-time analytics and secure API design.",
   github: "https://github.com/Mayuurrr",
-  resume: "https://drive.google.com/file/d/13e3Lr2DcPQ1zXeNgk1q39xXiFM4NxaFp/view?usp=sharing",
+  resume: "https://drive.google.com/file/d/1K2YJaGA1Mhh7s8yldNbxdiERwJAZf9OD/view?usp=sharing",
   linkedin: "https://www.linkedin.com/in/mayurhegde",
   email: "mayurhegde11@gmail.com",
   phone: "+91 9019238681",
